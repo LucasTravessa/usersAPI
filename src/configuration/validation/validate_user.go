@@ -18,32 +18,32 @@ var (
 )
 
 func init() {
-	if val , ok := binding.Validator.Engine().(*validator.Validate); ok{
-		en:= en.New()
+	if val, ok := binding.Validator.Engine().(*validator.Validate); ok {
+		en := en.New()
 		unt := ut.New(en, en)
-		transl , _ = unt.GetTranslator("en")
+		transl, _ = unt.GetTranslator("en")
 		en_translations.RegisterDefaultTranslations(val, transl)
 	}
 
 }
 
-func ValidateUserError(validation_err error) *rest_err.RestErr{
+func ValidateUserError(validation_err error) *rest_err.RestErr {
 	var jsonErr *json.UnmarshalTypeError
 	var jsonValidationErr validator.ValidationErrors
 
-	if errors.As(validation_err, jsonErr){
+	if errors.As(validation_err, &jsonErr) {
 		return rest_err.NewBadRequestError("Invalid field type")
-	}else if errors.As(validation_err, jsonValidationErr){
+	} else if errors.As(validation_err, &jsonValidationErr) {
 		errorsCauses := []rest_err.Causes{}
-		for _, e := range validation_err.(validator.ValidationErrors){
+		for _, e := range validation_err.(validator.ValidationErrors) {
 			cause := rest_err.Causes{
 				Message: e.Translate(transl),
-				Field: e.Field(),
+				Field:   e.Field(),
 			}
 			errorsCauses = append(errorsCauses, cause)
 		}
 		return rest_err.NewBadRequestValidationError("Invalid field type", errorsCauses)
-	}else {
+	} else {
 		return rest_err.NewBadRequestError("Error trying to convert fields")
 	}
 
