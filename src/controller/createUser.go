@@ -7,11 +7,12 @@ import (
 	"example.com/m/src/configuration/validation"
 	"example.com/m/src/controller/model/request"
 	"example.com/m/src/model"
+	"example.com/m/src/view"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
 
-func CreateUser(c *gin.Context) {
+func (uc *userControllerInterface) CreateUser(c *gin.Context) {
 
 	logger.Info("Init CreateUser", zap.String("journey", "CreateUser"))
 
@@ -30,12 +31,12 @@ func CreateUser(c *gin.Context) {
 		userRequest.Age,
 	)
 
-	if err := domain.CreateUser(); err != nil {
+	if err := uc.service.CreateUser(domain); err != nil {
 		logger.Error("Error trying to create user", err, zap.String("journey", "CreateUser"))
 		c.JSON(err.Code, err)
 		return
 	}
 
-	logger.Info("User created successfully", zap.String("journey", "CreateUser"))
-	c.JSON(http.StatusOK, "")
+	logger.Info("User created successfully", zap.String("journey", "CreateUser"), zap.Any("user", view.ConvertDomainToResponse(domain)))
+	c.JSON(http.StatusOK, view.ConvertDomainToResponse(domain))
 }
