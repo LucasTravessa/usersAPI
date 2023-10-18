@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func NewUserContrllerInterface(
+func NewUserControllerInterface(
 	serviceInterface service.UserDomainService,
 ) UserControllerInterface {
 	return &userControllerInterface{
@@ -14,6 +14,8 @@ func NewUserContrllerInterface(
 }
 
 type UserControllerInterface interface {
+	GetAllUsers(c *gin.Context)
+
 	FindUserById(c *gin.Context)
 	FindUserByEmail(c *gin.Context)
 

@@ -17,5 +17,8 @@ type userRepository struct {
 }
 
 type UserRepository interface {
+	GetAllUsers() ([]model.UserDomainInterface, *rest_err.RestErr)
+	FindUserByID(id string) (model.UserDomainInterface, *rest_err.RestErr)
+	FindUserByEmail(email string) (model.UserDomainInterface, *rest_err.RestErr)
 	CreateUser(userDomain model.UserDomainInterface) (model.UserDomainInterface, *rest_err.RestErr)
 }
