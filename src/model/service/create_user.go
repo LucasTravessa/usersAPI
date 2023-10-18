@@ -1,8 +1,6 @@
 package service
 
 import (
-	"fmt"
-
 	"example.com/m/src/configuration/logger"
 	"example.com/m/src/configuration/rest_err"
 	"example.com/m/src/model"
@@ -11,9 +9,15 @@ import (
 
 func (ud *userDomainService) CreateUser(
 	userDomain model.UserDomainInterface,
-) *rest_err.RestErr {
+) (model.UserDomainInterface, *rest_err.RestErr) {
 	logger.Info("Init createUser model", zap.String("journey", "createUser"))
 	userDomain.EncryptPassword()
-	fmt.Println(userDomain.GetPassword())
-	return nil
+	userDomainRepository, err := ud.userRepository.CreateUser(userDomain)
+	if err != nil {
+		logger.Error("Error while creating user", err, zap.String("journey", "createUser"))
+
+		return nil, err
+	}
+	logger.Info("Successfully created user", zap.String("journey", "createUser"))
+	return userDomainRepository, nil
 }
