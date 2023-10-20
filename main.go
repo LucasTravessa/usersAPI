@@ -5,10 +5,7 @@ import (
 	"log"
 
 	"example.com/m/src/configuration/database/mongodb"
-	"example.com/m/src/controller"
 	"example.com/m/src/controller/routes"
-	"example.com/m/src/model/repository"
-	"example.com/m/src/model/service"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
@@ -26,15 +23,11 @@ func main() {
 		return
 	}
 
-	repo := repository.NewUserRepository(database)
-	service := service.NewUserDomainService(repo)
-	controller := controller.NewUserControllerInterface(service)
-
-	// userController := initDependencies(database)
+	userController := initDependencies(database)
 
 	router := gin.Default()
 
-	routes.InitRoutes(&router.RouterGroup, controller)
+	routes.InitRoutes(&router.RouterGroup, userController)
 
 	if err := router.Run(":8080"); err != nil {
 		log.Fatal(err)

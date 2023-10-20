@@ -13,6 +13,6 @@ func InitRoutes(
 	r.GET("/userById/:userId", userController.FindUserById)
 	r.GET("/userByEmail/:userEmail", userController.FindUserByEmail)
 	r.POST("/createUser", userController.CreateUser)
-	r.PUT("/updateUser/:userId", userController.UpdateUser)
+	r.PATCH("/updateUser/:userId", userController.UpdateUser)
 	r.DELETE("/deleteUser/:userId", userController.DeleteUser)
 }

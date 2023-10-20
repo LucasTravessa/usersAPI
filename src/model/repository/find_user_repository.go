@@ -53,7 +53,8 @@ func (ur *userRepository) FindUserByID(id string) (model.UserDomainInterface, *r
 
 	obectId, _ := primitive.ObjectIDFromHex(id)
 
-	filter := bson.D{{Key: "id", Value: obectId}}
+	filter := bson.D{{Key: "_id", Value: obectId}}
+
 	err := collection.FindOne(context.Background(), filter).Decode(userEntity)
 
 	if err != nil {

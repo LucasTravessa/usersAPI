@@ -21,3 +21,10 @@ func NewUserDomain(email, password, name string, age int8) *userDomain {
 		age:      age,
 	}
 }
+
+func NewUserUpdateDomain(name string, age int8) *userDomain {
+	return &userDomain{
+		name: name,
+		age:  age,
+	}
+}
