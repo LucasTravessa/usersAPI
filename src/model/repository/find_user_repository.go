@@ -16,6 +16,36 @@ import (
 	"go.uber.org/zap"
 )
 
+func (ur *userRepository) FindUserByEmailAndPassword(email string, password string) (model.UserDomainInterface, *rest_err.RestErr) {
+	logger.Info("Init findUserByEmailAndPassword repository", zap.String("journey", "findUserByEmailAndPassword"))
+
+	collection_name := os.Getenv(MONGODB_USER_DB)
+	collection := ur.databaseConnection.Collection(collection_name)
+
+	userEntity := &entity.UserEntity{}
+
+	filter := bson.D{
+		{Key: "email", Value: email},
+		{Key: "password", Value: password},
+	}
+	err := collection.FindOne(context.Background(), filter).Decode(userEntity)
+
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			errorMessage := "User not found with this email and password"
+			return nil, rest_err.NewForbiddenError(errorMessage)
+		}
+		logger.Error("Error trying to find user by email and password", err, zap.String("journey", "findUserByEmailAndPassword"))
+		errorMessage := "Error trying to find user by email and password"
+		return nil, rest_err.NewInternalServerError(errorMessage)
+	}
+
+	logger.Info("End findUserByEmailAndPassword repository", zap.String("journey", "findUserByEmailAndPassword"), zap.String("email", userEntity.Email))
+
+	return converter.ConvertEntityToDomain(*userEntity), nil
+
+}
+
 func (ur *userRepository) FindUserByEmail(email string) (model.UserDomainInterface, *rest_err.RestErr) {
 	logger.Info("Init findUserByEmil repository", zap.String("journey", "findUserByEmail"))
 
